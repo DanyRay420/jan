@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect, SetStateAction, Dispatch } from 'react'
+import { Fragment, useEffect, SetStateAction, Dispatch } from 'react'
 
 import { InferenceEngine } from '@janhq/core'
 import {
