@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Badge,
   Button,
@@ -28,6 +30,8 @@ import { useGetDownloadedModels } from '@/hooks/useGetDownloadedModels'
 import useGetSystemResources from '@/hooks/useGetSystemResources'
 import { useMainViewState } from '@/hooks/useMainViewState'
 
+import CommandListDownloadedModel from '../TopBar/CommandListDownloadedModel'
+
 const BottomBar = () => {
   const { activeModel, stateModel } = useActiveModel()
   const { ram, cpu } = useGetSystemResources()
@@ -35,6 +39,8 @@ const BottomBar = () => {
   const { downloadedModels } = useGetDownloadedModels()
   const { setMainViewState } = useMainViewState()
   const { downloadStates } = useDownloadState()
+
+  const [open, setOpen] = useState(false)
 
   const linksMenu = [
     {
@@ -58,24 +64,31 @@ const BottomBar = () => {
           ) : null}
         </div>
 
+        <Badge
+          themes="secondary"
+          className="cursor-pointer rounded-md border-none font-medium"
+          onClick={() => setOpen(!open)}
+        >
+          My Models&nbsp;
+          <ShortCut menu="E" />
+        </Badge>
+
         {stateModel.state === 'start' && stateModel.loading && (
-          <SystemItem name="Starting:" value={stateModel.model || '-'} />
+          <SystemItem
+            titleBold
+            name="Starting"
+            value={stateModel.model || '-'}
+          />
         )}
         {stateModel.state === 'stop' && stateModel.loading && (
-          <SystemItem name="Stopping:" value={stateModel.model || '-'} />
+          <SystemItem
+            titleBold
+            name="Stopping"
+            value={stateModel.model || '-'}
+          />
         )}
         {!stateModel.loading && downloadedModels.length !== 0 && (
-          <SystemItem
-            name={activeModel?.id ? 'Active model:' : ''}
-            value={
-              activeModel?.id || (
-                <Badge themes="outline" className="pl-1">
-                  <ShortCut menu="E" />
-                  &nbsp; to view models
-                </Badge>
-              )
-            }
-          />
+          <SystemItem titleBold name={'Active model'} value={activeModel?.id} />
         )}
         {downloadedModels.length === 0 &&
           !stateModel.loading &&
@@ -91,13 +104,15 @@ const BottomBar = () => {
 
         <DownloadingState />
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-3">
         <div className="flex items-center gap-x-2">
           <SystemItem name="CPU:" value={`${cpu}%`} />
           <SystemItem name="Mem:" value={`${ram}%`} />
         </div>
         {/* VERSION is defined by webpack, please see next.config.js */}
-        <span className="text-xs">Jan v{VERSION ?? ''}</span>
+        <span className="text-xs text-muted-foreground">
+          Jan v{VERSION ?? ''}
+        </span>
         <div className="mt-1 flex items-center gap-x-2">
           {linksMenu
             .filter((link) => !!link)
@@ -125,6 +140,7 @@ const BottomBar = () => {
             })}
         </div>
       </div>
+      <CommandListDownloadedModel open={open} setOpen={setOpen} />
     </div>
   )
 }

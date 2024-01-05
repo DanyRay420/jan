@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState, useEffect, SetStateAction, Dispatch } from 'react'
 
 import { InferenceEngine } from '@janhq/core'
 import {
@@ -19,7 +19,15 @@ import { useActiveModel } from '@/hooks/useActiveModel'
 import { useGetDownloadedModels } from '@/hooks/useGetDownloadedModels'
 import { useMainViewState } from '@/hooks/useMainViewState'
 
-export default function CommandListDownloadedModel() {
+type CommandListDownloadedModelType = {
+  open?: boolean
+  setOpen: Dispatch<SetStateAction<boolean>>
+}
+
+export default function CommandListDownloadedModel(
+  props: CommandListDownloadedModelType
+) {
+  const { open, setOpen } = props
   const { setMainViewState } = useMainViewState()
   const { downloadedModels } = useGetDownloadedModels()
   const { activeModel, startModel, stopModel } = useActiveModel()
@@ -32,13 +40,13 @@ export default function CommandListDownloadedModel() {
     }
   }
 
-  const [open, setOpen] = useState(false)
+  // const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'e' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setOpen((open) => !open)
+        setOpen(!open)
       }
     }
     document.addEventListener('keydown', down)
