@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use node alpine as it's a small node image
-FROM node:alpine
+FROM node:23.11.1-alpine3.21
 
 # Create the directory on the node image 
 # where our Next.js app will live
